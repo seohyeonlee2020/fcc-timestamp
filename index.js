@@ -24,6 +24,44 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+//input in yyyy-mm-dd format
+app.get("/api/:year-:month-:day", function (req, res) {
+  //destrcture input (req.params) into year, month, day
+  const {year, month, day} = req.params;
+  //create date object from params
+  const date = new Date(`${year}-${month}-${day}`)
+  //check validity
+  if (isNaN(date)){
+    res.json({"error": "invalid date"});
+  }
+  else{
+  //send back unix, utc format
+  res.json({
+    "unix": date.getTime(),
+    "utc": date.toUTCString()
+  });
+}
+});
+
+app.get("/api/:unixdate", function (req, res){
+  //take unix date and turn into right type
+  // {"unixdate":"1451001600000"}
+  const unixDate = Number(req.params.unixdate);
+  //console.log('unixDate', unixDate, typeof unixDate);
+  //create date object
+  const date = new Date(unixDate);
+  //console.log('date', date);
+  //check validity 
+  if (isNaN(date)){
+    return res.json({"error": "invalid date"});
+  } 
+  //send back unix and utc as json
+  res.json({
+    "unix": unixDate, 
+    "utc": date.toUTCString()
+  });
+})
+
 
 
 // Listen on port set in environment variable or default to 3000
